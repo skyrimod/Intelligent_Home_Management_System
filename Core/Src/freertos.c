@@ -59,7 +59,19 @@ osThreadId_t ledTaskHandle;
 const osThreadAttr_t ledTask_attributes = {
         .name = "ledTask",
         .stack_size = 128 * 4,
-        .priority = (osPriority_t) osPriorityLow,
+        .priority = (osPriority_t) osPriorityNormal,
+};
+osThreadId_t drawPointHandle;
+const osThreadAttr_t drawPoint_attributes = {
+        .name = "drawPoint",
+        .stack_size = 256 * 4,
+        .priority = (osPriority_t) osPriorityNormal,
+};
+osThreadId_t lcdInitHandle;
+const osThreadAttr_t lcdInit_attributes = {
+        .name = "lcdInit",
+        .stack_size = 128 * 4,
+        .priority = (osPriority_t) osPriorityNormal,
 };
 
 /* Private function prototypes -----------------------------------------------*/
@@ -70,6 +82,8 @@ const osThreadAttr_t ledTask_attributes = {
 void StartDefaultTask(void *argument);
 
 void led_toggle_task(void *argument);
+void draw_point_task(void *argument);
+void lcd_init_task(void *argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -127,10 +141,12 @@ void MX_FREERTOS_Init(void) {
 
     /* Create the thread(s) */
     /* creation of defaultTask */
+    lcdInitHandle = osThreadNew(lcd_init_task, NULL, &lcdInit_attributes);
+    ledTaskHandle = osThreadNew(led_toggle_task, NULL, &ledTask_attributes);
+    drawPointHandle = osThreadNew(draw_point_task, NULL, &drawPoint_attributes);
     defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
 
     /* creation of ledTask */
-    ledTaskHandle = osThreadNew(led_toggle_task, NULL, &ledTask_attributes);
 
     /* USER CODE BEGIN RTOS_THREADS */
     /* add threads, ... */
@@ -173,6 +189,22 @@ void led_toggle_task(void *argument) {
         osDelay(1000);
     }
     /* USER CODE END led_toggle_task */
+}
+
+void draw_point_task(void  *argument){
+    for (;;){
+        lcd_show_string(30, 50, 200, 16, 16, "STM32", RED);
+        lcd_show_string(30, 70, 200, 16, 16, "DHT11 TEST", RED);
+        lcd_show_string(30, 90, 200, 16, 16, "ATOM@ALIENTEK", RED);
+
+        lcd_draw_line(0,0,200,200,BLACK);
+        osDelay(1000);
+    }
+}
+
+void lcd_init_task(void *argument){
+    lcd_init();
+    osThreadExit();
 }
 
 /* Private application code --------------------------------------------------*/
