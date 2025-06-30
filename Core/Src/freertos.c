@@ -76,20 +76,13 @@ osThreadId_t drawPointHandle;
 const osThreadAttr_t drawPoint_attributes = {
         .name = "drawPoint",
         .stack_size = 192 * 4,
-        .priority = (osPriority_t) osPriorityNormal,
+        .priority = (osPriority_t) osPriorityLow,
 };
 osThreadId_t initHandle;
 const osThreadAttr_t init_attributes = {
         .name = "init",
         .stack_size = 128 * 4,
         .priority = (osPriority_t) osPriorityRealtime1,
-};
-
-osThreadId_t dht11StartHandle;
-const osThreadAttr_t dht11Start_attributes = {
-        .name = "dht11_start",
-        .stack_size = 128 * 4,
-        .priority = (osPriority_t) osPriorityHigh,
 };
 
 osThreadId_t dht11ReadHandle;
@@ -154,7 +147,7 @@ void MX_FREERTOS_Init(void) {
 
     /* USER CODE BEGIN RTOS_MUTEX */
     /* add mutexes, ... */
-    dht11_binary = xSemaphoreCreateBinary();
+   vSemaphoreCreateBinary(dht11_binary);
     /* USER CODE END RTOS_MUTEX */
 
     /* USER CODE BEGIN RTOS_SEMAPHORES */
@@ -173,10 +166,9 @@ void MX_FREERTOS_Init(void) {
     /* Create the thread(s) */
     /* creation of defaultTask */
     initHandle = osThreadNew(init_task, NULL, &init_attributes);
+    dht11ReadHandle = osThreadNew(dht11_read_task, NULL, &dht11Read_attributes);
     drawPointHandle = osThreadNew(draw_test_task, NULL, &drawPoint_attributes);
     ledTaskHandle = osThreadNew(led_toggle_task, NULL, &ledTask_attributes);
-    dht11StartHandle = osThreadNew(dht11_start_task, NULL, &dht11Start_attributes);
-    dht11ReadHandle = osThreadNew(dht11_read_task, NULL, &dht11Read_attributes);
     defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
 
     /* creation of ledTask */
@@ -238,33 +230,24 @@ void draw_test_task(void  *argument){
         } else{
             lcd_show_string(30, 90, 200, 16, 16, "DHT11 Read Data Timeout!!!", RED);
         }
-        osDelay(5000);
+        osDelay(500);
     }
 }
 
 void init_task(void *argument){
     dwt_init();
-    dht11_init();
+    if (dht11_init() == 1){
+        for(;;){
+            HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_5);
+        }
+    }
     lcd_init();
     osThreadExit();
 }
 
-// dht11开始信号任务
-void dht11_start_task(void *argument){
-    dht11_binary = xSemaphoreCreateBinary();
-    for(;;){
-        dht11_start();
-        // 唤醒读取任务
-        xSemaphoreGive(dht11_binary);
-        // 每3s采集一次数据
-        osDelay(3000);
-    }
-}
 // dht等待响应并读取任务
 void dht11_read_task(void *argument){
     for(;;){
-        xSemaphoreTake(dht11_binary, portMAX_DELAY);
-
         taskENTER_CRITICAL();
 
         SensorMessage msg = {0};
@@ -276,7 +259,7 @@ void dht11_read_task(void *argument){
 
         taskEXIT_CRITICAL();
 
-        osDelay(1000);
+        osDelay(200);
     }
 }
 
