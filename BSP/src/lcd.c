@@ -1,6 +1,7 @@
 #include "stdlib.h"
 #include "lcd.h"
 #include "lcdfont.h"
+#include "dwt_delay.h"
 #include "cmsis_os2.h"
 
 SRAM_HandleTypeDef g_sram_handle;    /* SRAM句柄(用于控制LCD) */
@@ -28,12 +29,12 @@ void lcd_write_reg(uint16_t regno, uint16_t data) {
     LCD->LCD_RAM = data;
 }
 
-void LCD_WriteRAM_Prepare(void)
+void lcd_write_ram_prepare(void)
 {
     lcd_wr_regno(lcddev.wramcmd);
 }
 
-void LCD_SetCursor(uint16_t Xpos, uint16_t Ypos)
+void lcd_set_cursor(uint16_t Xpos, uint16_t Ypos)
 {
     lcd_wr_regno(lcddev.setxcmd);
     lcd_wr_data(Xpos>>8);
@@ -46,25 +47,48 @@ void LCD_SetCursor(uint16_t Xpos, uint16_t Ypos)
     lcd_wr_data(0x00FF&Ypos);
     lcd_wr_data((Ypos+1)>>8);
     lcd_wr_data((Ypos+1));
-    LCD_WriteRAM_Prepare();	//开始写入GRAM
+    lcd_write_ram_prepare();	//开始写入GRAM
 }
 
-void LCD_DrawPoint_16Bit(uint16_t color)
+void lcd_draw_point_16bit(uint16_t color)
 {
     lcd_wr_data(color);
 }
 
-void LCD_DrawPoint(uint16_t x,uint16_t y)
+void lcd_draw_point(uint16_t x, uint16_t y)
 {
-    LCD_SetCursor(x,y);
+    lcd_set_cursor(x, y);
     lcd_wr_data(g_point_color);
 }
 
-void LCD_DrawPoint_Color(uint16_t x,uint16_t y, uint16_t color) {
-    LCD_SetCursor(x,y);
+void lcd_draw_point_color(uint16_t x, uint16_t y, uint16_t color) {
+    lcd_set_cursor(x, y);
     lcd_wr_data(color);
 }
+/**
+ * @brief       在指定区域内填充指定颜色块
+ * @param       (sx,sy),(ex,ey):填充矩形对角坐标,区域大小为:(ex - sx + 1) * (ey - sy + 1)
+ * @param       color: 要填充的颜色数组首地址
+ * @retval      无
+ */
+void lcd_color_fill(uint16_t sx, uint16_t sy, uint16_t ex, uint16_t ey, uint16_t *color)
+{
+    uint16_t height, width;
+    uint16_t i, j;
+    width = ex - sx + 1;            /* 得到填充的宽度 */
+    height = ey - sy + 1;           /* 高度 */
 
+    for (i = 0; i < height; i++)
+    {
+        lcd_set_cursor(sx, sy + i); /* 设置光标位置 */
+        lcd_write_ram_prepare();    /* 开始写入GRAM */
+
+        for (j = 0; j < width; j++)
+        {
+            LCD->LCD_RAM = color[i * width + j]; /* 写入数据 */
+        }
+    }
+}
 
 void lcd_draw_line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color)
 {
@@ -97,7 +121,7 @@ void lcd_draw_line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t 
 
     for (t = 0; t <= distance + 1; t++ )   /* 画线输出 */
     {
-        LCD_DrawPoint(row, col); /* 画点 */
+        lcd_draw_point_color(row, col, color);
         xerr += delta_x ;
         yerr += delta_y ;
 
@@ -226,7 +250,7 @@ void lcd_ili9486_init(void)
     lcd_wr_data(0x55);
 
     lcd_wr_regno(0x11);
-    osDelay(120);
+    delay_ms(120);
     lcd_wr_regno(0x29);
 }
 
@@ -319,15 +343,15 @@ void lcd_gpio_init(void) {
     fsmc_write_handle.AccessMode = FSMC_ACCESS_MODE_A;
 
     HAL_SRAM_Init(&g_sram_handle, &fsmc_read_handle, &fsmc_write_handle);
-    osDelay(50);        /* 初始化FSMC后,必须等待一定时间才能开始初始化 */
+    delay_ms(50);        /* 初始化FSMC后,必须等待一定时间才能开始初始化 */
 }
 
 void LCD_RESET(void)
 {
     LCD_RST_CLR;
-    osDelay(100);
+    delay_ms(100);
     LCD_RST_SET;
-    osDelay(50);
+    delay_ms(50);
 }
 
 void LCD_SetParam(void)
@@ -348,7 +372,7 @@ void LCD_SetParam(void)
 #endif
 }
 
-void LCD_SetWindows(uint16_t xStar, uint16_t yStar,uint16_t xEnd,uint16_t yEnd)
+void lcd_set_windows(uint16_t xStar, uint16_t yStar, uint16_t xEnd, uint16_t yEnd)
 {
     lcd_wr_regno(lcddev.setxcmd);
     lcd_wr_data(xStar>>8);
@@ -362,14 +386,14 @@ void LCD_SetWindows(uint16_t xStar, uint16_t yStar,uint16_t xEnd,uint16_t yEnd)
     lcd_wr_data(yEnd>>8);
     lcd_wr_data(0x00FF&yEnd);
 
-    LCD_WriteRAM_Prepare();	//开始写入GRAM
+    lcd_write_ram_prepare();	//开始写入GRAM
 }
 
 
-void LCD_Clear(uint16_t color) {
+void lcd_clear(uint16_t color) {
     uint32_t index = 0;
 
-    LCD_SetWindows(0,0,lcddev.width-1, lcddev.height-1);
+    lcd_set_windows(0, 0, lcddev.width - 1, lcddev.height - 1);
     for(index=0; index<153600; index++)
     {
         LCD->LCD_RAM=color;
@@ -385,7 +409,7 @@ void lcd_init(void) {
     lcd_ili9486_init();
     LCD_SetParam();//设置LCD参数
     LCD_BL(1);
-    LCD_Clear(WHITE);
+    lcd_clear(WHITE);
 }
 
 /**
@@ -395,6 +419,7 @@ void lcd_init(void) {
  * @param       size : 字体大小 12/16/24/32
  * @param       mode : 叠加方式(1); 非叠加方式(0);
  * @param       color : 字符的颜色;
+ *
  * @retval      无
  */
 void lcd_show_char(uint16_t x, uint16_t y, char chr, uint8_t size, uint8_t mode, uint16_t color)
@@ -437,11 +462,11 @@ void lcd_show_char(uint16_t x, uint16_t y, char chr, uint8_t size, uint8_t mode,
         {
             if (temp & 0x80)        /* 有效点,需要显示 */
             {
-                LCD_DrawPoint_Color(x, y, color);        /* 画点出来,要显示这个点 */
+                lcd_draw_point_color(x, y, color);        /* 画点出来,要显示这个点 */
             }
             else if (mode == 0)     /* 无效点,不显示 */
             {
-                LCD_DrawPoint_Color(x, y, g_back_color); /* 画背景色,相当于这个点不显示(注意背景色由全局变量控制) */
+                lcd_draw_point_color(x, y, g_back_color); /* 画背景色,相当于这个点不显示(注意背景色由全局变量控制) */
             }
 
             temp <<= 1; /* 移位, 以便获取下一个位的状态 */

@@ -121,6 +121,7 @@ typedef struct {
 #define D2U_R2L         7           /* 从下到上,从右到左 */
 
 #define DFT_SCAN_DIR    L2R_U2D     /* 默认的扫描方向 */
+#define USE_HORIZONTAL  0
 
 /* 常用画笔颜色 */
 #define WHITE           0xFFFF      /* 白色 */
@@ -152,14 +153,15 @@ void lcd_wr_regno(volatile uint16_t regno);          /* LCD写寄存器编号/�
 void lcd_write_reg(uint16_t regno, uint16_t data);   /* LCD写寄存器的值 */
 
 void lcd_init(void);                        /* 初始化LCD */
-void LCD_Clear(uint16_t color);
-void LCD_SetWindows(uint16_t xStar, uint16_t yStar,uint16_t xEnd,uint16_t yEnd);
-void LCD_DrawPoint(uint16_t x,uint16_t y);
-void LCD_DrawPoint_Color(uint16_t x,uint16_t y, uint16_t color);
-void LCD_DrawPoint_16Bit(uint16_t color);
-void LCD_SetCursor(uint16_t Xpos, uint16_t Ypos);
-void LCD_WriteRAM_Prepare(void);
+void lcd_clear(uint16_t color);
+void lcd_set_windows(uint16_t xStar, uint16_t yStar, uint16_t xEnd, uint16_t yEnd);
+void lcd_draw_point(uint16_t x, uint16_t y);
+void lcd_draw_point_color(uint16_t x, uint16_t y, uint16_t color);
+void lcd_draw_point_16bit(uint16_t color);
+void lcd_set_cursor(uint16_t Xpos, uint16_t Ypos);
+void lcd_write_ram_prepare(void);
 void lcd_draw_line(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color);     /* 画直线 */
+void lcd_color_fill(uint16_t sx, uint16_t sy, uint16_t ex, uint16_t ey, uint16_t *color);
 
 void lcd_show_char(uint16_t x, uint16_t y, char chr, uint8_t size, uint8_t mode, uint16_t color);                       /* 显示一个字符 */
 void lcd_show_num(uint16_t x, uint16_t y, uint32_t num, uint8_t len, uint8_t size, uint16_t color);                     /* 显示数字 */
