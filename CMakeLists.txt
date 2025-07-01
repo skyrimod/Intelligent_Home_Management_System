@@ -45,18 +45,33 @@ target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined library search paths
 )
 
-# Add sources to executable
-target_sources(${CMAKE_PROJECT_NAME} PRIVATE
-    # Add user sources here
+set(BSP_Src
         BSP/src/lcd.c
         BSP/src/dht11.c
         BSP/src/dwt_delay.c
+        BSP/src/mq2.c
+)
+
+set(App_Tasks
+        Application/Tasks/Src/tasks_init.c
+        Application/Tasks/Src/init_task.c
+        Application/Tasks/Src/mq2_task.c
+        Application/Tasks/Src/dht11_task.c
+        Application/Tasks/Src/lcd_task.c
+)
+
+# Add sources to executable
+target_sources(${CMAKE_PROJECT_NAME} PRIVATE
+    # Add user sources here
+        ${BSP_Src}
+        ${App_Tasks}
 )
 
 # Add include paths
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined include paths
         BSP/inc
+        Application/Tasks/Inc
 )
 
 # Add project symbols (macros)
