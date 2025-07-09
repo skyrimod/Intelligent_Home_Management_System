@@ -58,11 +58,19 @@ set(App_Tasks
         Application/Tasks/Src/mq2_task.c
         Application/Tasks/Src/dht11_task.c
         Application/Tasks/Src/lcd_task.c
+        Application/Tasks/Src/log_task.c
+)
+
+set(EasyLogger_Src
+        Middlewares/EasyLogger/src/elog.c
+        Middlewares/EasyLogger/src/elog_utils.c
+        Middlewares/EasyLogger/port/elog_port.c
 )
 
 # Add sources to executable
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user sources here
+        ${EasyLogger_Src}
         ${BSP_Src}
         ${App_Tasks}
 )
@@ -72,6 +80,7 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined include paths
         BSP/inc
         Application/Tasks/Inc
+        Middlewares/EasyLogger/inc
 )
 
 # Add project symbols (macros)

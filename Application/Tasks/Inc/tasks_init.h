@@ -13,6 +13,10 @@
 
 extern QueueHandle_t dht11SensorQueue;
 extern QueueHandle_t mq2SensorQueue;
+extern QueueHandle_t logQueue;
+
+extern SemaphoreHandle_t dmaSemaphore;
+extern SemaphoreHandle_t logSemaphore;
 
 void my_tasks_init(void );
 

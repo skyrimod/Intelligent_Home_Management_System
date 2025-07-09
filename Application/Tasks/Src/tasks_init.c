@@ -6,15 +6,33 @@
 #include "mq2_task.h"
 #include "dht11_task.h"
 #include "lcd_task.h"
+#include "log_task.h"
 
 QueueHandle_t dht11SensorQueue;
 QueueHandle_t mq2SensorQueue;
+QueueHandle_t logQueue;
+
+SemaphoreHandle_t dmaSemaphore;
+SemaphoreHandle_t logSemaphore;
+
+typedef struct {
+    void (*task)(void *argument);
+    void *argument;
+    const osThreadAttr_t attr;
+} TaskInfo_t;
 
 osThreadId_t initTaskHandle;
 const osThreadAttr_t initTask_attr = {
         .name = "initTask",
-        .stack_size = 128 * 4,
+        .stack_size = 512,
         .priority = (osPriority_t) osPriorityRealtime,
+};
+
+osThreadId_t logHandle;
+const osThreadAttr_t logTask_attr = {
+        .name = "logTask",
+        .stack_size = 256,
+        .priority = (osPriority_t) osPriorityHigh
 };
 
 osThreadId_t dht11ReadHandle;
@@ -38,12 +56,25 @@ const osThreadAttr_t lcdShowTask_attr = {
         .priority = (osPriority_t) osPriorityLow,
 };
 
+
 void my_tasks_init(void ){
     // 消息队列
     dht11SensorQueue = xQueueCreate(5, sizeof(DHT11_SensorMessage_t));
     mq2SensorQueue = xQueueCreate(2, sizeof(MQ2_SensorMessage_t));
+    logQueue = xQueueCreate(10, sizeof(LogMessage));
+
+    // 信号量
+    dmaSemaphore = xSemaphoreCreateBinary();
+    configASSERT(dmaSemaphore != NULL);
+    xSemaphoreGive(dmaSemaphore);
+
+    logSemaphore = xSemaphoreCreateMutex();
+    configASSERT(logSemaphore != NULL);
+    xSemaphoreGive(logSemaphore);
+
     // 创建任务
     initTaskHandle = osThreadNew(init_task, NULL, &initTask_attr);
+    logHandle = osThreadNew(log_task, NULL, &logTask_attr);
     dht11ReadHandle = osThreadNew(dht11_read_task, NULL, &dht11ReadTask_attr);
 //    mq2ReadHandle = osThreadNew(mq2_read_task, NULL, &mq2ReadTask_attr);
     lcdShowHandle = osThreadNew(lcd_show_task, NULL, &lcdShowTask_attr);

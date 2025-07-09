@@ -20,7 +20,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "gpio.h"
-
+#include "uart.h"
 /* USER CODE BEGIN 0 */
 
 /* USER CODE END 0 */
@@ -62,7 +62,6 @@ void MX_GPIO_Init(void) {
     GPIO_InitStruct.Pin = GPIO_PIN_5;
     HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_5, GPIO_PIN_SET);
-
 }
 
 /* USER CODE BEGIN 2 */

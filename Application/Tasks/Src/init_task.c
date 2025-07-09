@@ -7,8 +7,12 @@
 #include "mq2.h"
 #include "dwt_delay.h"
 #include "cmsis_os2.h"
+#include "log_task.h"
 
 void init_task(void *argument){
+    // EasyLogger init
+    log_init();
+
     dwt_init();
 
     if (dht11_init() == 1){
@@ -17,7 +21,7 @@ void init_task(void *argument){
         }
     }
 
-    mq2_init();
+//    mq2_init();
 
     lcd_init();
 
