@@ -9,10 +9,14 @@
 void lcd_show_task(void *argument){
     DHT11_SensorMessage_t dht11Msg;
     MQ2_SensorMessage_t mq2Msg;
+
+    uint8_t cont = 0;
+
     uint16_t adcx = 0;
     float temp = 0;
     for (;;){
         lcd_show_string(30, 50, 200, 16, 16, "STM32", RED);
+        lcd_show_num(30 + 40, 50, cont++, 8, 16, RED);
         lcd_show_string(30, 70, 200, 16, 16, "DHT11 TEST", RED);
         if (xQueueReceive(dht11SensorQueue  , &dht11Msg, pdMS_TO_TICKS(3500))){
             if (dht11Msg.status == HAL_OK){

@@ -24,35 +24,35 @@ typedef struct {
 osThreadId_t initTaskHandle;
 const osThreadAttr_t initTask_attr = {
         .name = "initTask",
-        .stack_size = 512,
+        .stack_size = 1024 * 2,
         .priority = (osPriority_t) osPriorityRealtime,
-};
-
-osThreadId_t logHandle;
-const osThreadAttr_t logTask_attr = {
-        .name = "logTask",
-        .stack_size = 256,
-        .priority = (osPriority_t) osPriorityHigh
 };
 
 osThreadId_t dht11ReadHandle;
 const osThreadAttr_t dht11ReadTask_attr = {
         .name = "dht11ReadTask",
-        .stack_size = 128 * 4,
+        .stack_size = 512,
         .priority = (osPriority_t) osPriorityHigh,
 };
 
 osThreadId_t mq2ReadHandle;
 const osThreadAttr_t mq2ReadTask_attr = {
         .name = "mq2ReadTask",
-        .stack_size = 128 * 4,
+        .stack_size = 512,
         .priority = (osPriority_t) osPriorityHigh,
 };
 
 osThreadId_t lcdShowHandle;
 const osThreadAttr_t lcdShowTask_attr = {
         .name = "lcdShowTask",
-        .stack_size = 192 * 4,
+        .stack_size = 1024 * 4,
+        .priority = (osPriority_t) osPriorityNormal,
+};
+
+osThreadId_t logHandle;
+const osThreadAttr_t logTask_attr = {
+        .name = "logTask",
+        .stack_size = 1024 * 2,
         .priority = (osPriority_t) osPriorityLow,
 };
 
@@ -70,12 +70,11 @@ void my_tasks_init(void ){
 
     logSemaphore = xSemaphoreCreateMutex();
     configASSERT(logSemaphore != NULL);
-    xSemaphoreGive(logSemaphore);
 
     // 创建任务
     initTaskHandle = osThreadNew(init_task, NULL, &initTask_attr);
     logHandle = osThreadNew(log_task, NULL, &logTask_attr);
-    dht11ReadHandle = osThreadNew(dht11_read_task, NULL, &dht11ReadTask_attr);
+//    dht11ReadHandle = osThreadNew(dht11_read_task, NULL, &dht11ReadTask_attr);
 //    mq2ReadHandle = osThreadNew(mq2_read_task, NULL, &mq2ReadTask_attr);
-    lcdShowHandle = osThreadNew(lcd_show_task, NULL, &lcdShowTask_attr);
+//    lcdShowHandle = osThreadNew(lcd_show_task, NULL, &lcdShowTask_attr);
 }

@@ -2,6 +2,7 @@
 // Created by 73227 on 2025/7/9.
 //
 #include "log_task.h"
+#include "dwt_delay.h"
 
 void log_init(void ){
     elog_init();
@@ -21,6 +22,7 @@ void log_task(void *argument){
     static uint8_t *lastSentBuffer = NULL;
 
     for (;;){
+        UBaseType_t high_water = uxTaskGetStackHighWaterMark(NULL);
         if (xQueueReceive(logQueue, &msg, portMAX_DELAY) == pdPASS){
             // 等待上次DMA完成
             xSemaphoreTake(dmaSemaphore, portMAX_DELAY);
@@ -34,6 +36,7 @@ void log_task(void *argument){
             // 启动本次DMA发送并记录缓冲区
             lastSentBuffer = msg.data;
             uart1_send_dma(msg.data, msg.len);
+
         }
     }
 }

@@ -43,7 +43,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef *huart){
         // 连接UART1与DMA
         __HAL_LINKDMA(huart, hdmatx, hdma);
 
-        HAL_NVIC_SetPriority(DMA1_Channel4_IRQn, 5, 0);
+        HAL_NVIC_SetPriority(DMA1_Channel4_IRQn, 3, 0);
         HAL_NVIC_EnableIRQ(DMA1_Channel4_IRQn);
     }
 }
