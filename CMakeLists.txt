@@ -46,10 +46,10 @@ target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
 )
 
 set(BSP_Src
-        BSP/src/lcd.c
-        BSP/src/dht11.c
-        BSP/src/dwt_delay.c
-        BSP/src/mq2.c
+        BSP/drv/src/lcd.c
+        BSP/drv/src/dht11.c
+        BSP/drv/src/dwt_delay.c
+        BSP/drv/src/mq2.c
 )
 
 set(App_Tasks
@@ -78,7 +78,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
 # Add include paths
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined include paths
-        BSP/inc
+        BSP/drv/inc
         Application/Tasks/Inc
         Middlewares/EasyLogger/inc
 )

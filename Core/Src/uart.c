@@ -24,27 +24,27 @@ void HAL_UART_MspInit(UART_HandleTypeDef *huart){
         gpio_init_struct.Mode = GPIO_MODE_AF_INPUT;
         HAL_GPIO_Init(UART1_GPIO_PORT, &gpio_init_struct);
 
-        // 初始化DMA
-        __HAL_RCC_DMA1_CLK_ENABLE();
-
-        hdma.Instance = DMAx_CHy;
-        hdma.Init.Mode = DMA_NORMAL;
-        hdma.Init.Direction = DMA_MEMORY_TO_PERIPH;
-        hdma.Init.PeriphInc = DMA_PINC_DISABLE;
-        hdma.Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE;
-        hdma.Init.MemInc = DMA_MINC_ENABLE;
-        hdma.Init.MemDataAlignment = DMA_MDATAALIGN_BYTE;
-        hdma.Init.Priority = DMA_PRIORITY_HIGH;
-
-        if (HAL_DMA_Init(&hdma) != HAL_OK){
-            Error_Handler();
-        }
-
-        // 连接UART1与DMA
-        __HAL_LINKDMA(huart, hdmatx, hdma);
-
-        HAL_NVIC_SetPriority(DMA1_Channel4_IRQn, 3, 0);
-        HAL_NVIC_EnableIRQ(DMA1_Channel4_IRQn);
+//        // 初始化DMA
+//        __HAL_RCC_DMA1_CLK_ENABLE();
+//
+//        hdma.Instance = DMAx_CHy;
+//        hdma.Init.Mode = DMA_NORMAL;
+//        hdma.Init.Direction = DMA_MEMORY_TO_PERIPH;
+//        hdma.Init.PeriphInc = DMA_PINC_DISABLE;
+//        hdma.Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE;
+//        hdma.Init.MemInc = DMA_MINC_ENABLE;
+//        hdma.Init.MemDataAlignment = DMA_MDATAALIGN_BYTE;
+//        hdma.Init.Priority = DMA_PRIORITY_HIGH;
+//
+//        if (HAL_DMA_Init(&hdma) != HAL_OK){
+//            Error_Handler();
+//        }
+//
+//        // 连接UART1与DMA
+//        __HAL_LINKDMA(huart, hdmatx, hdma);
+//
+//        HAL_NVIC_SetPriority(DMA1_Channel4_IRQn, 3, 0);
+//        HAL_NVIC_EnableIRQ(DMA1_Channel4_IRQn);
     }
 }
 
@@ -66,6 +66,10 @@ void uart_init(uint32_t baudrate){
 
 void uart1_send_dma(uint8_t *buf, uint16_t len){
     HAL_UART_Transmit_DMA(&huart, buf, len);
+}
+
+void uart1_send(uint8_t *buf, uint16_t len){
+    HAL_UART_Transmit(&huart, buf, len, 100);
 }
 
 

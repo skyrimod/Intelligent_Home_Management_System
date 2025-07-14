@@ -53,21 +53,7 @@ ElogErrCode elog_port_init(void) {
 void elog_port_output(const char *log, size_t size) {
     
     /* add your code here */
-    uint8_t *buf = pvPortMalloc(size);
-    if (buf != NULL){
-        elog_memcpy(buf, log, size);
-
-        LogMessage msg = {buf, (uint16_t)size};
-
-        // 非阻塞方式入队
-        BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-        if (xPortIsInsideInterrupt()){
-            xQueueSendFromISR(logQueue, &msg, &xHigherPriorityTaskWoken);
-            portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
-        } else{
-            xQueueSend(logQueue, &msg, 0);
-        }
-    }
+    uart1_send(log, size);
 }
 
 /**

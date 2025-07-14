@@ -20,10 +20,8 @@ void log_init(void ){
 void log_task(void *argument){
     LogMessage msg;
     static uint8_t *lastSentBuffer = NULL;
-
     for (;;){
-        UBaseType_t high_water = uxTaskGetStackHighWaterMark(NULL);
-        if (xQueueReceive(logQueue, &msg, portMAX_DELAY) == pdPASS){
+        if ( xQueueReceive(logQueue, &msg, portMAX_DELAY) == pdPASS){
             // 等待上次DMA完成
             xSemaphoreTake(dmaSemaphore, portMAX_DELAY);
 

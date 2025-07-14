@@ -32,28 +32,28 @@ void lcd_show_task(void *argument){
             lcd_show_string(30, 90, 200, 16, 16, "DHT11 Read Data Timeout!!!", RED);
         }
 
-        if (xQueueReceive(mq2SensorQueue, &mq2Msg, pdMS_TO_TICKS(3000))){
-            lcd_show_string(30, 180, 200, 16, 16, "MQ2 DATA: ", RED);
-            lcd_show_string(30, 210, 200, 16, 16, "MQ2 Vol:  0.000", BLUE);
-            // 显示整数
-            temp = mq2Msg.data.voltage;
-            adcx = temp;
-            lcd_show_xnum(30 + 80, 210, adcx, 1, 16, 0, BLUE);
-            // 显示小数
-            temp -= adcx;
-            temp *= 1000;
-            lcd_show_xnum(30 + 80 + 16, 210, temp, 3, 16, 0x80, BLUE);
-
-            lcd_show_string(30, 240, 200, 16, 16, "MQ2 ppm:  0.000", BLUE);
-            // 显示整数
-            temp = mq2Msg.data.ppm;
-            adcx = temp;
-            lcd_show_xnum(30 + 80, 240, adcx, 1, 16, 0, BLUE);
-            // 显示小数
-            temp -= adcx;
-            temp *= 1000;
-            lcd_show_xnum(30 + 80 + 16, 240, temp, 3, 16, 0x80, BLUE);
-        }
+//        if (xQueueReceive(mq2SensorQueue, &mq2Msg, pdMS_TO_TICKS(3000))){
+//            lcd_show_string(30, 180, 200, 16, 16, "MQ2 DATA: ", RED);
+//            lcd_show_string(30, 210, 200, 16, 16, "MQ2 Vol:  0.000", BLUE);
+//            // 显示整数
+//            temp = mq2Msg.data.voltage;
+//            adcx = temp;
+//            lcd_show_xnum(30 + 80, 210, adcx, 1, 16, 0, BLUE);
+//            // 显示小数
+//            temp -= adcx;
+//            temp *= 1000;
+//            lcd_show_xnum(30 + 80 + 16, 210, temp, 3, 16, 0x80, BLUE);
+//
+//            lcd_show_string(30, 240, 200, 16, 16, "MQ2 ppm:  0.000", BLUE);
+//            // 显示整数
+//            temp = mq2Msg.data.ppm;
+//            adcx = temp;
+//            lcd_show_xnum(30 + 80, 240, adcx, 1, 16, 0, BLUE);
+//            // 显示小数
+//            temp -= adcx;
+//            temp *= 1000;
+//            lcd_show_xnum(30 + 80 + 16, 240, temp, 3, 16, 0x80, BLUE);
+//        }
         osDelay(500);
     }
 }

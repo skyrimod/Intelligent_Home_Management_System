@@ -24,8 +24,6 @@ void init_task(void *argument){
 //    mq2_init();
 
     lcd_init();
-    UBaseType_t high_water = uxTaskGetStackHighWaterMark(NULL);
-    log_i("init_task stack high water : %lu", high_water);
 
     osThreadExit();
 }

@@ -10,6 +10,10 @@ void dwt_init(void ){
     DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
 }
 
+uint32_t dwt_get_ticks(void ){
+    return DWT->CYCCNT;
+}
+
 void delay_us(uint16_t us){
     uint32_t start = DWT->CYCCNT;
     uint32_t cycles = us * (SystemCoreClock / 1000000);
