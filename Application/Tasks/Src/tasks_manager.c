@@ -45,7 +45,7 @@ TaskInfo_t task_tab[] = {
             .argument = NULL,
             .attr = {
                     .name = "dht11ReadTask",
-                    .stack_size = 512,
+                    .stack_size = 128 * 5,
                     .priority = (osPriority_t) osPriorityHigh,
             }
         },
@@ -61,12 +61,22 @@ TaskInfo_t task_tab[] = {
         },
         {
             .enable = 1,
-            .task = wdg_task,
+            .task = hw_wdg_task,
             .argument = NULL,
             .attr = {
-                    .name = "wdgTask",
+                    .name = "hwdgTask",
                     .stack_size = 128 * 2,
                     .priority = (osPriority_t) osPriorityBelowNormal,
+            }
+        },
+        {
+            .enable = 1,
+            .task = sw_wdg_task,
+            .argument = NULL,
+            .attr = {
+                    .name = "swdgTask",
+                    .stack_size = 2048,
+                    .priority = (osPriority_t) osPriorityLow7,
             }
         }
 };

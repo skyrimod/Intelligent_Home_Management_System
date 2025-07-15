@@ -23,6 +23,7 @@
 #include "main.h"
 #include "cmsis_os2.h"
 #include "tasks_manager.h"
+#include "dwt_delay.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -79,7 +80,7 @@ __weak void configureTimerForRunTimeStats(void) {
 }
 
 __weak unsigned long getRunTimeCounterValue(void) {
-    return 0;
+    return xTaskGetTickCount();
 }
 /* USER CODE END 1 */
 
