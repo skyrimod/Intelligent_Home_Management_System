@@ -4,6 +4,7 @@
 #include "lcd_task.h"
 #include "dht11_task.h"
 #include "mq2_task.h"
+#include "wdg_task.h"
 #include "stdio.h"
 
 void lcd_show_task(void *argument){
@@ -54,6 +55,7 @@ void lcd_show_task(void *argument){
 //            temp *= 1000;
 //            lcd_show_xnum(30 + 80 + 16, 240, temp, 3, 16, 0x80, BLUE);
 //        }
-        osDelay(500);
+        xEventGroupSetBits(wdgEventGroup, LCD_TASK_BIT);
+        osDelay(200);
     }
 }

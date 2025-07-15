@@ -53,12 +53,13 @@ set(BSP_Src
 )
 
 set(App_Tasks
-        Application/Tasks/Src/tasks_init.c
+        Application/Tasks/Src/tasks_manager.c
         Application/Tasks/Src/init_task.c
         Application/Tasks/Src/mq2_task.c
         Application/Tasks/Src/dht11_task.c
         Application/Tasks/Src/lcd_task.c
         Application/Tasks/Src/log_task.c
+        Application/Tasks/Src/wdg_task.c
 )
 
 set(EasyLogger_Src

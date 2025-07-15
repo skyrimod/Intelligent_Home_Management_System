@@ -27,7 +27,7 @@
  */
 
 #define LOG_TAG      "elog"
-#include "tasks_init.h"
+#include "tasks_manager.h"
 #include "queue.h"
 
 #include <elog.h>

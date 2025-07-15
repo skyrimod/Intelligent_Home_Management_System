@@ -6,7 +6,7 @@
 #define INTELLIGENT_HOME_MANAGEMENT_SYSTEM_MQ2_TASK_H
 
 #include "mq2.h"
-#include "tasks_init.h"
+#include "tasks_manager.h"
 
 typedef struct {
     MQ2_DATA_t data;

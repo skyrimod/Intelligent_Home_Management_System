@@ -21,6 +21,7 @@
 #include "cmsis_os.h"
 #include "gpio.h"
 #include "uart.h"
+#include "wdg.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */

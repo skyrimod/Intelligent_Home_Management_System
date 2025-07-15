@@ -6,7 +6,7 @@
 #define INTELLIGENT_HOME_MANAGEMENT_SYSTEM_DHT11_TASK_H
 
 #include "dht11.h"
-#include "tasks_init.h"
+#include "tasks_manager.h"
 
 typedef struct {
     dht11_data_t data;
