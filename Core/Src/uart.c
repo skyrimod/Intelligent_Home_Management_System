@@ -61,7 +61,6 @@ void uart_init(uint32_t baudrate){
     if (HAL_UART_Init(&huart) != HAL_OK){
         Error_Handler();
     }
-
 }
 
 void uart1_send_dma(uint8_t *buf, uint16_t len){
@@ -70,6 +69,7 @@ void uart1_send_dma(uint8_t *buf, uint16_t len){
 
 void uart1_send(uint8_t *buf, uint16_t len){
     HAL_UART_Transmit(&huart, buf, len, 100);
+//    HAL_UART_Transmit_IT(&huart, buf, len);
 }
 
 

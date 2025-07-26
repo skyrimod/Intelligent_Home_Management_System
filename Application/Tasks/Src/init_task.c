@@ -15,11 +15,11 @@ void init_task(void *argument){
 
     dwt_init();
 
-    if (dht11_init() == 1){
-        for(;;){
-            HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_5);
-        }
-    }
+//    if (dht11_init() == 1){
+//        for(;;){
+//            HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_5);
+//        }
+//    }
 
 //    mq2_init();
 

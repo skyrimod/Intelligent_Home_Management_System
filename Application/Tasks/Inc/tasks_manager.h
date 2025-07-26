@@ -15,6 +15,7 @@
 extern QueueHandle_t dht11SensorQueue;
 extern QueueHandle_t mq2SensorQueue;
 extern QueueHandle_t logQueue;
+extern QueueHandle_t sensorQueue;
 
 extern EventGroupHandle_t wdgEventGroup;
 

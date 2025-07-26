@@ -11,8 +11,8 @@
 #include "task.h"
 
 #define LCD_TASK_BIT (1 << 0)
-#define DHT11_TASK_BIT  (1 << 1)
-#define ALL_TASKS_BIT   (LCD_TASK_BIT | DHT11_TASK_BIT)
+#define SENSOR_TASK_BIT (1 << 1)
+#define ALL_TASKS_BIT   (LCD_TASK_BIT | SENSOR_TASK_BIT)
 
 #define WATCHDOG_TIMEOUT_MS 200
 

@@ -22,6 +22,6 @@
 // 接口
 void uart_init(uint32_t baudrate);
 void uart1_send(uint8_t *buf, uint16_t len);
-void uart1_send_dma(uint8_t *buf, uint16_t len);
+//void uart1_send_dma(uint8_t *buf, uint16_t len);
 
 #endif //INTELLIGENT_HOME_MANAGEMENT_SYSTEM_UART_H

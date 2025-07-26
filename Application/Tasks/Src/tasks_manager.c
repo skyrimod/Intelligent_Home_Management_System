@@ -8,11 +8,13 @@
 #include "lcd_task.h"
 #include "log_task.h"
 #include "wdg_task.h"
+#include "sensor_task.h"
 
 // 队列
 QueueHandle_t dht11SensorQueue;
 QueueHandle_t mq2SensorQueue;
 QueueHandle_t logQueue;
+QueueHandle_t sensorQueue;
 
 // 事件组
 EventGroupHandle_t wdgEventGroup;
@@ -41,10 +43,10 @@ TaskInfo_t task_tab[] = {
         },
         {
             .enable = 1,
-            .task = dht11_read_task,
+            .task = sensor_task,
             .argument = NULL,
             .attr = {
-                    .name = "dht11ReadTask",
+                    .name = "sensorReadTask",
                     .stack_size = 128 * 5,
                     .priority = (osPriority_t) osPriorityHigh,
             }
@@ -60,7 +62,7 @@ TaskInfo_t task_tab[] = {
             }
         },
         {
-            .enable = 1,
+            .enable = 0,
             .task = hw_wdg_task,
             .argument = NULL,
             .attr = {
@@ -99,6 +101,7 @@ TaskInfo_t task_tab[] = {
 void my_tasks_init(void ){
     // 消息队列
     dht11SensorQueue = xQueueCreate(5, sizeof(DHT11_SensorMessage_t));
+    sensorQueue = xQueueCreate(10, sizeof (SensorMsg));
 //    mq2SensorQueue = xQueueCreate(2, sizeof(MQ2_SensorMessage_t));
 
     // 创建事件组
