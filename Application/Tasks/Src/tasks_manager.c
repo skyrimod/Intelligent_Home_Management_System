@@ -46,7 +46,7 @@ TaskInfo_t task_tab[] = {
             .task = sensor_task,
             .argument = NULL,
             .attr = {
-                    .name = "sensorReadTask",
+                    .name = "sensorTask",
                     .stack_size = 128 * 5,
                     .priority = (osPriority_t) osPriorityHigh,
             }

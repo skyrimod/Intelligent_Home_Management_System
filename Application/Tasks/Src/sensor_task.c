@@ -3,7 +3,7 @@
 //
 #include "sensor_task.h"
 #include "sht30.h"
-#include "i2c.h"
+#include "myiic.h"
 
 void sensor_task(void *argument){
     SensorMsg msg = {0};
@@ -12,7 +12,7 @@ void sensor_task(void *argument){
     SHT30_Register();
 
     SHT30_Config sht30_cfg = {
-           .hi2c = &hi2c,
+//           .hi2c = &hi2c,
            .i2c_addr = 0x44     // SHT30默认地址
     };
 

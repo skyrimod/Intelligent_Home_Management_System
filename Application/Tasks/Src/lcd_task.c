@@ -6,10 +6,12 @@
 #include "mq2_task.h"
 #include "wdg_task.h"
 #include "stdio.h"
+#include "sensor_task.h"
 
 void lcd_show_task(void *argument){
     DHT11_SensorMessage_t dht11Msg;
     MQ2_SensorMessage_t mq2Msg;
+    SensorMsg sensorMsg;
 
     uint8_t cont = 0;
 
@@ -18,20 +20,21 @@ void lcd_show_task(void *argument){
     for (;;){
         lcd_show_string(30, 50, 200, 16, 16, "STM32", RED);
         lcd_show_num(30 + 40, 50, cont++, 8, 16, RED);
-        lcd_show_string(30, 70, 200, 16, 16, "DHT11 TEST", RED);
-        if (xQueueReceive(dht11SensorQueue  , &dht11Msg, pdMS_TO_TICKS(3500))){
-            if (dht11Msg.status == HAL_OK){
-                lcd_show_string(30, 90, 200, 16, 16, "DHT11 DATA OK", RED);
-                lcd_show_string(30, 120, 200, 16, 16, "Temp:  C", BLUE);
-                lcd_show_num(30 + 40, 120, dht11Msg.data.temperature, 2, 16, BLUE);
-                lcd_show_string(30, 150, 200, 16, 16, "Humi:  %", BLUE);
-                lcd_show_num(30 + 40, 150, dht11Msg.data.humidity, 2, 16, BLUE);
-            } else{
-                lcd_show_string(30, 90, 200, 16, 16, "DHT11 ERROR", RED);
-            }
-        } else{
-            lcd_show_string(30, 90, 200, 16, 16, "DHT11 Read Data Timeout!!!", RED);
-        }
+        lcd_show_string(30, 70, 200, 16, 16, "SHT30 TEST", RED);
+        if (xQueueReceive(sensorQueue  , &sensorMsg, pdMS_TO_TICKS(3500))){
+            lcd_show_string(30, 90, 200, 16, 16, "SHT30 DATA OK", RED);
+            lcd_show_string(30, 120, 200, 16, 16, "Temp:  C", BLUE);
+            lcd_show_num(30 + 40, 120, sensorMsg.temperature, 2, 16, BLUE);
+            lcd_show_string(30, 150, 200, 16, 16, "Humi:  %", BLUE);
+            lcd_show_num(30 + 40, 150, sensorMsg.humidity, 2, 16, BLUE);
+//            if (dht11Msg.status == HAL_OK){
+//
+//            } else{
+//                lcd_show_string(30, 90, 200, 16, 16, "DHT11 ERROR", RED);
+//            }
+//        } else{
+//            lcd_show_string(30, 90, 200, 16, 16, "DHT11 Read Data Timeout!!!", RED);
+//        }
 
 //        if (xQueueReceive(mq2SensorQueue, &mq2Msg, pdMS_TO_TICKS(3000))){
 //            lcd_show_string(30, 180, 200, 16, 16, "MQ2 DATA: ", RED);
@@ -58,4 +61,5 @@ void lcd_show_task(void *argument){
         xEventGroupSetBits(wdgEventGroup, LCD_TASK_BIT);
         osDelay(200);
     }
+}
 }

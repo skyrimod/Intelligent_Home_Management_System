@@ -22,7 +22,7 @@
 #include "gpio.h"
 #include "uart.h"
 #include "wdg.h"
-#include "i2c.h"
+#include "myiic.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -94,7 +94,7 @@ int main(void) {
     /* USER CODE BEGIN 2 */
     // 串口初始化
     uart_init(115200);
-    i2c_init();
+    iic_init();
     /* USER CODE END 2 */
 
     /* Init scheduler */

@@ -21,7 +21,7 @@ typedef struct {
 } SystemStatus_t;
 
 static TaskMonitorInfo_t monitorInfo[] = {
-        {NULL, "dht11ReadTask", 0, UINT32_MAX},
+        {NULL, "sensorTask", 0, UINT32_MAX},
         {NULL, "lcdShowTask", 0, UINT32_MAX},
         {NULL, "swdgTask", 0, UINT32_MAX}
 };

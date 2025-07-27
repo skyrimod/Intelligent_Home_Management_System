@@ -7,6 +7,9 @@
 
 #include "tasks_manager.h"
 #include "wdg_task.h"
+#include "sensor_config.h"
+
+#define ACT_SHT30
 
 typedef struct {
     float temperature;
